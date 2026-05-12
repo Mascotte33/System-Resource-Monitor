@@ -1,8 +1,8 @@
 import time
-
 from dotenv import load_dotenv
 import os, yaml
 from collector.metrics import collect_metrics
+from db.storage import add_baseline, init_db
 from health.score import calculate_score 
 
 load_dotenv()
@@ -13,12 +13,15 @@ with open("config.yaml") as file:
 config["DISCORD_WEBHOOK_URL"] = os.environ.get("DISCORD_WEBHOOK_URL")
 
 if __name__ == "__main__":
-
+    init_db()
     while True:
         try:
             metrics = collect_metrics()
             print(metrics)
-            print(f"Health Score: {calculate_score(metrics, config)}")
+            print(f"Health Score: {calculate_score(metrics, config)}")            
+            add_baseline('cpu_percent', metrics['cpu_percent'])
+            add_baseline('ram_percent', metrics['ram_percent'])
+            add_baseline('disk_percent', metrics['disk_percent'])
             time.sleep(config["collection"]["interval_seconds"])
             
         except KeyboardInterrupt:
