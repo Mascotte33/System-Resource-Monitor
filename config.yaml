@@ -1,0 +1,36 @@
+# ── Collection ────────────────────────────────────────────────
+collection:
+  interval_seconds: 5        # how often metrics are gathered
+  baseline_window: 60        # number of samples kept for anomaly baseline
+
+# ── Health Score Weights (must sum to 1.0) ────────────────────
+health:
+  weights:
+    cpu:  0.40
+    ram:  0.30
+    disk: 0.20
+    temp: 0.10
+
+# ── Anomaly Detection ─────────────────────────────────────────
+anomaly:
+  multiplier: 3.0            # flag if current > baseline_mean × multiplier
+  thresholds:
+    cpu_percent:  90.0       # also flag if raw value exceeds this
+    ram_percent:  90.0
+    disk_percent: 95.0
+    temp_celsius: 85.0
+
+# ── Prometheus Exporter ───────────────────────────────────────
+prometheus:
+  port: 8000
+
+# ── Alerts (fill in your real tokens/URLs to enable) ──────────
+alerts:
+  discord:
+    enabled: false
+    webhook_url: "${DISCORD_WEBHOOK_URL}"
+
+  sns:
+    enabled: false
+    topic_arn: "${SNS_TOPIC_ARN}"
+    region:    "us-east-1"

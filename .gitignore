@@ -1,0 +1,4 @@
+.env
+.github/agents/system-monitor.agent.md
+collector/__pycache__/metrics.cpython-313.pyc
+*.pyc
