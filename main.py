@@ -1,6 +1,7 @@
 import time
 from dotenv import load_dotenv
 import os, yaml
+from alerts.discord import send_discord_alert
 from anomaly.detector import check_anomaly
 from collector.metrics import collect_metrics
 from db.storage import add_baseline, init_db
@@ -11,14 +12,18 @@ load_dotenv()
 with open("config.yaml") as file:
     config = yaml.safe_load(file)
 
-config["DISCORD_WEBHOOK_URL"] = os.environ.get("DISCORD_WEBHOOK_URL")
+if config == None:
+    print('config.yml file is missing. ')
+    quit()
+
+config["alerts"]['discord']['webhook_url'] = os.environ.get("DISCORD_WEBHOOK_URL")
+
 
 if __name__ == "__main__":
     init_db()
     while True:
         try:
             metrics = collect_metrics()
-            print(metrics)
             print(f"Health Score: {calculate_score(metrics, config)}")     
 
             add_baseline('cpu_percent', metrics['cpu_percent'])
@@ -26,12 +31,14 @@ if __name__ == "__main__":
             add_baseline('disk_percent', metrics['disk_percent'])
 
             if check_anomaly('cpu_percent', metrics['cpu_percent'], config):
-                print ('Anomaly! cpu_percent spike detected!')
+                message = {"content": f"🚨 CPU spike detected: {metrics['cpu_percent']}%"}
+                send_discord_alert(message, config)
             if check_anomaly('ram_percent', metrics['ram_percent'], config):
-                print ('Anomaly! ram_percent spike detected!')
+                message = {"content": f"🚨 RAM spike detected: {metrics['ram_percent']}%"}
+                send_discord_alert(message, config)
             if check_anomaly('disk_percent', metrics['disk_percent'], config):
-                print ('Anomaly! disk_percent spike detected!')
-                
+                message = {"content": f"🚨 Disk spike detected: {metrics['disk_percent']}%"}
+                send_discord_alert(message, config)
             time.sleep(config["collection"]["interval_seconds"])
             
         except KeyboardInterrupt:

@@ -27,7 +27,7 @@ prometheus:
 # ── Alerts (fill in your real tokens/URLs to enable) ──────────
 alerts:
   discord:
-    enabled: false
+    enabled: True
     webhook_url: "${DISCORD_WEBHOOK_URL}"
 
   sns:
