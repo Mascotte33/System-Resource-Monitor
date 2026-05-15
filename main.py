@@ -22,7 +22,7 @@ config["alerts"]['discord']['webhook_url'] = os.environ.get("DISCORD_WEBHOOK_URL
 
 if __name__ == "__main__":
     init_db()    
-    start_exporter(config['Exporter']['port'])
+    start_exporter(config['exporter']['port'])
     while True:
         try:
             metrics = collect_metrics()
