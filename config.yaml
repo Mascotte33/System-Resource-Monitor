@@ -21,7 +21,7 @@ anomaly:
     temp_celsius: 85.0
 
 # ── Prometheus Exporter ───────────────────────────────────────
-prometheus:
+Exporter:
   port: 8000
 
 # ── Alerts (fill in your real tokens/URLs to enable) ──────────

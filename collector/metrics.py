@@ -25,7 +25,7 @@ def collect_metrics():
         "cpu_percent" : psutil.cpu_percent(interval=1),
         "ram_percent" : psutil.virtual_memory().percent,
         "disk_percent" : psutil.disk_usage('/').percent,
-       # "temp_celsius" : psutil.sensors_temperatures(),         -To add when on real machine 
+       # "temp_celsius" : psutil.sensors_temperatures(),         -To add when on real machine because WSL does not show temps
         "top_ten_processes" : top_procesess[:10]
     }
 

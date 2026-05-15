@@ -40,9 +40,9 @@ def get_baseline_avarage(metric_name : str, window : float) -> float:
     
     return baseline_avarage[0] if baseline_avarage[0] is not None else 0.0
 
-def add_anomalies(metric_name : str, value : float, offender_process : dict) -> None:
+def add_anomalies(metric_name : str, value : float, offender_process : dict, config : dict) -> None:
     timestamp = datetime.datetime.now().strftime("%d-%m-%YT%H:%M:%SZ")
-    avarage_value = get_baseline_avarage(metric_name, 60)                   ### 60 is now hardcoded but needs to be fixed later once i get to window XD
+    avarage_value = get_baseline_avarage(metric_name, config['collection']['baseline_window'])
 
     connection = sqlite3.connect("monitor.db")
     cursor = connection.cursor()
