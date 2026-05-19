@@ -28,7 +28,14 @@ if __name__ == "__main__":
     while True:
         try:
             metrics = collect_metrics()
-            offender_process = metrics['top_ten_processes'][0]['name']
+            
+            
+            if metrics['top_ten_processes']:
+                offender_process = metrics['top_ten_processes'][0]['name']
+            else:
+                offender_process = "N/A"
+                logger.warning('There is not enough logs to show top ten offenders.')
+
             health_score = calculate_score(metrics, config)
             logger.info(f'Health Score: {health_score}')            
 
