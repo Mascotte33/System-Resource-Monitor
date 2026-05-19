@@ -3,7 +3,8 @@ import os
 import sqlite3
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
+from alerts.discord import send_discord_alert
 from anomaly.detector import check_anomaly
 from db.storage import add_anomalies, add_baseline, get_baseline_avarage, init_db
 from health.score import calculate_score
@@ -94,7 +95,7 @@ class TestStorage(unittest.TestCase):
 
         self.assertEqual(metric, [('cpu_percent',13.0)])
 
-    def tets_not_get_baseline_avarage(self):
+    def tests_not_get_baseline_avarage(self):
         self.assertEqual(get_baseline_avarage('ram_percent', 60), 0.0)
 
     def test_get_baseline_avarage(self):
@@ -120,6 +121,66 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(anomaly[0][1], 99.0)
         self.assertEqual(anomaly[0][2], 15.0)
         self.assertEqual(anomaly[0][3], 'stress')
+
+class TestDiscordAlert(unittest.TestCase):
+    def test_send_discord_alert_returns_true(self):
+        
+        config = {
+            'alerts' : {
+                'discord' : {
+                    'enabled' : True,
+                    'webhook_url' : 'http://fake-url'
+                }
+            } 
+        }
+        message = {"content": f"🚨 CPU spike detected: 10%"}
+
+        with patch('alerts.discord.requests.post') as mock_post:
+            with patch('alerts.discord.time.sleep'):
+                mock_post.return_value.status_code = 200
+                result = send_discord_alert(message, config)
+
+        self.assertTrue(result) 
+
+    def test_send_discord_alert_returns_false(self):
+        
+        config = {
+            'alerts' : {
+                'discord' : {
+                    'enabled' : True,
+                    'webhook_url' : 'http://fake-url'
+                }
+            } 
+        }
+        message = {"content": f"🚨 CPU spike detected: 10%"}
+
+        with patch('alerts.discord.requests.post') as mock_post:
+            with patch('alerts.discord.time.sleep'):
+                mock_post.return_value.status_code = 500
+                result = send_discord_alert(message, config)
+
+        self.assertEqual(mock_post.call_count,3)
+        self.assertFalse(result)
+
+    def test_send_discord_alert_returns_discord_disabled(self):
+        config = {
+            'alerts' : {
+                'discord' : {
+                    'enabled' : False,
+                    'webhook_url' : 'http://fake-url'
+                }
+            } 
+        }
+        message = {"content": f"🚨 CPU spike detected: 10%"}
+
+
+        with patch('alerts.discord.requests.post') as patch_post:
+            with patch('alerts.discord.time.sleep'):
+                result = send_discord_alert(message, config)
+
+        self.assertFalse(result)
+        self.assertEqual(patch_post.call_count, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
