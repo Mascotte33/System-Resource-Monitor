@@ -5,7 +5,7 @@ from config.logger_config import logger
 from alerts.discord import send_discord_alert
 from anomaly.detector import check_anomaly
 from collector.metrics import collect_metrics
-from db.storage import add_anomalies, add_baseline, init_db
+from db.storage import add_anomalies, add_baseline, init_db, prune_baseline
 from exporter import increment_anomaly_counter, start_exporter, update_metrics
 from health.score import calculate_score 
 
@@ -35,6 +35,7 @@ if __name__ == "__main__":
             add_baseline('cpu_percent', metrics['cpu_percent'])
             add_baseline('ram_percent', metrics['ram_percent'])
             add_baseline('disk_percent', metrics['disk_percent'])
+            prune_baseline(config['collection']['baseline_window'])
 
             if check_anomaly('cpu_percent', metrics['cpu_percent'], config):
                 message = {"content": f"🚨 CPU spike detected: {metrics['cpu_percent']}%"}

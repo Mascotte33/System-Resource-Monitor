@@ -28,6 +28,17 @@ def add_baseline(metric_name : str, value : float) -> None:
     connection.commit()
     connection.close()
 
+def prune_baseline(window : float) -> None:
+    connection = sqlite3.connect("monitor.db")
+    cursor = connection.cursor()
+    cursor.execute('DELETE FROM baselines WHERE rowid NOT IN (' \
+    'SELECT rowid ' \
+    'FROM baselines ' \
+    'ORDER BY rowid DESC ' \
+    'LIMIT (?)) ', (int(window*3),))
+    connection.commit()
+    connection.close()
+
 def get_baseline_avarage(metric_name : str, window : float) -> float:
     connection = sqlite3.connect("monitor.db")
     cursor = connection.cursor()
