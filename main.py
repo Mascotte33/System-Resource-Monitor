@@ -60,7 +60,7 @@ if __name__ == "__main__":
             time.sleep(config["collection"]["interval_seconds"])
 
         except KeyboardInterrupt:
-            logger.info('Stopped')
+            logger.info('System Resource Monitor shutting down gracefully.')
             break
 
         except Exception as e:
