@@ -1,2 +1,5 @@
 dotenv
 pyyaml
+psutil
+prometheus-client
+requests

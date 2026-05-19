@@ -1,6 +1,7 @@
 import time
 from dotenv import load_dotenv
 import os, yaml
+from config.logger_config import logger 
 from alerts.discord import send_discord_alert
 from anomaly.detector import check_anomaly
 from collector.metrics import collect_metrics
@@ -8,13 +9,14 @@ from db.storage import add_anomalies, add_baseline, init_db
 from exporter import increment_anomaly_counter, start_exporter, update_metrics
 from health.score import calculate_score 
 
+
 load_dotenv()
 
-with open("config.yaml") as file:
+with open("config/config.yaml") as file:
     config = yaml.safe_load(file)
 
 if config == None:
-    print('config.yml file is missing. ')
+    logger.critical('config.yml file is missing, exiting')
     quit()
 
 config["alerts"]['discord']['webhook_url'] = os.environ.get("DISCORD_WEBHOOK_URL")
@@ -28,7 +30,7 @@ if __name__ == "__main__":
             metrics = collect_metrics()
             offender_process = metrics['top_ten_processes'][0]['name']
             health_score = calculate_score(metrics, config)
-            print(health_score)     
+            logger.info(f'Health Score: {health_score}')            
 
             add_baseline('cpu_percent', metrics['cpu_percent'])
             add_baseline('ram_percent', metrics['ram_percent'])
@@ -58,9 +60,9 @@ if __name__ == "__main__":
             time.sleep(config["collection"]["interval_seconds"])
 
         except KeyboardInterrupt:
-            print("Stopped")
+            logger.info('Stopped')
             break
 
         except Exception as e:
-            print(f"Cycle Failed... \n {e}")
+            logger.error(f'Cycle failed... \n {e}')
             

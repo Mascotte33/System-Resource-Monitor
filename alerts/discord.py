@@ -1,4 +1,5 @@
 import requests
+from config.logger_config import logger
 
 def send_discord_alert(message : dict, config : dict) -> bool:
     try:
@@ -10,8 +11,8 @@ def send_discord_alert(message : dict, config : dict) -> bool:
                 return False
 
         else:
-            print('Discord messagin is turned off')
+            logger.info('Discord messagin is turned off')
             return False
     except Exception as e:
-        print(f'Error occured: \n {e}')
+        logger.exception(f'Error occured: \n {e}')
         return False
