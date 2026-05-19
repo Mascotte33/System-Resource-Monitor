@@ -1,6 +1,6 @@
 import psutil
 
-def collect_metrics():
+def collect_metrics() -> dict:
 
     processes = []
     for proc in psutil.process_iter(['pid','name', 'cpu_percent', 'memory_percent']):

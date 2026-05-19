@@ -45,16 +45,18 @@ if __name__ == "__main__":
             prune_baseline(config['collection']['baseline_window'])
 
             if check_anomaly('cpu_percent', metrics['cpu_percent'], config):
-                message = {"content": f"🚨 CPU spike detected: {metrics['cpu_percent']}%"}
+                message = {f"content": f"🚨 CPU spike detected: {metrics['cpu_percent']}%"}
                 send_discord_alert(message, config)
                 increment_anomaly_counter('cpu_percent')   
                 add_anomalies('cpu_percent', metrics['cpu_percent'], offender_process, config) 
+                logger.warning(f"{message['content']}")
             
             if check_anomaly('ram_percent', metrics['ram_percent'], config):
                 message = {"content": f"🚨 RAM spike detected: {metrics['ram_percent']}%"}
                 send_discord_alert(message, config)
                 increment_anomaly_counter('ram_percent')     
                 add_anomalies('ram_percent', metrics['ram_percent'],offender_process , config) 
+                logger.warning(f"{message['content']}")
           
 
             if check_anomaly('disk_percent', metrics['disk_percent'], config):
@@ -62,6 +64,7 @@ if __name__ == "__main__":
                 send_discord_alert(message, config)
                 increment_anomaly_counter('disk_percent')   
                 add_anomalies('disk_percent', metrics['disk_percent'],offender_process , config)          
+                logger.warning(f"{message['content']}")
             
             update_metrics(metrics, health_score)
 
