@@ -4,3 +4,5 @@ collector/__pycache__/metrics.cpython-313.pyc
 *.pyc
 monitor.db
 monitor.db
+.github/agents/devops-infra.agent.md
+.gitignore
