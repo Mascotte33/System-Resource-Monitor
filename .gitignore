@@ -6,3 +6,7 @@ monitor.db
 monitor.db
 .github/agents/devops-infra.agent.md
 .gitignore
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl
