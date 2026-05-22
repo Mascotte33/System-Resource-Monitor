@@ -23,3 +23,4 @@ resource "aws_dynamodb_table" "tf_lock" {
     type = "S"
   }
 }
+

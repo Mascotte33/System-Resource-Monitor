@@ -71,7 +71,7 @@ resource "aws_instance" "agent_instance_1" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.agent_sg.id]
-
+  user_data              = file("${path.module}/scripts/agent_user_data.sh")
   tags = {
     Name = "monitor-agent-1"
   }
@@ -82,7 +82,7 @@ resource "aws_instance" "agent_instance_2" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.agent_sg.id]
-
+  user_data              = file("${path.module}/scripts/agent_user_data.sh")
   tags = {
     Name = "monitor-agent-2"
   }
@@ -93,7 +93,6 @@ resource "aws_instance" "observabilty_instance" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.observability_sg.id]
-
   tags = {
     Name = "observabilty_instance"
   }
