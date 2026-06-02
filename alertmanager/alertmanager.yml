@@ -1,0 +1,10 @@
+route:
+  receiver: 'discord_webhook'
+  repeat_interval: 1h
+  group_by: [alertname]
+
+receivers:
+  - name: 'discord_webhook'
+    discord_configs:
+      - webhook_url_file: "/etc/alertmanager/discord_webhook.txt" # using a text file based secret due to system limitations in accepting env variables
+        send_resolved: true

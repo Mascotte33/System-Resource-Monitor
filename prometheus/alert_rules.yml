@@ -1,0 +1,21 @@
+groups:
+  - name: alert_rules
+    rules:
+
+      - alert: Instance_Down
+        expr: up == 0
+        for: 5m
+        labels: 
+          severity: critical
+        annotations: 
+          summary: "Instance  down"
+          description: "Instance has been down for more than 5min"
+      
+      - alert: CPU_Above_80       
+        expr: cpu_percent >= 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU % above 80"
+          description: "CPU % is above 80 for more than 2 minutes"

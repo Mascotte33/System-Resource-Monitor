@@ -11,3 +11,4 @@ terraform/*.tfstate
 terraform/*.tfstate.backup
 *.tfstate
 *.tfstate.*
+alertmanager/discord_webhook.txt
