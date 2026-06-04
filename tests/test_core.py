@@ -1,13 +1,12 @@
-import datetime
 import os
 import sqlite3
 import tempfile
 import unittest
 from unittest.mock import patch, Mock
-from alerts.discord import send_discord_alert
-from anomaly.detector import check_anomaly
-from db.storage import add_anomalies, add_baseline, get_baseline_avarage, init_db
-from health.score import calculate_score
+from src.alerts.discord import send_discord_alert
+from src.anomaly.detector import check_anomaly
+from src.db.storage import add_anomalies, add_baseline, get_baseline_avarage, init_db
+from src.health.score import calculate_score
 
 class TestHealthScore(unittest.TestCase):
     def test_calculate_score_uses_weighted_penalties(self):
@@ -57,7 +56,7 @@ class TestAnomalyDetection(unittest.TestCase):
                 'multiplier' : 3
             }
         }
-        with patch('anomaly.detector.get_baseline_avarage', return_value=20.0):
+        with patch('src.anomaly.detector.get_baseline_avarage', return_value=20.0):
             self.assertTrue(check_anomaly('cpu_percent', 61.0, config))
 
 
@@ -72,7 +71,7 @@ class TestAnomalyDetection(unittest.TestCase):
                 'multiplier' : 3
             }
         }
-        with patch('anomaly.detector.get_baseline_avarage', return_value=20.0):
+        with patch('src.anomaly.detector.get_baseline_avarage', return_value=20.0):
             self.assertFalse(check_anomaly('cpu_percent', 59.0, config))
 
 class TestStorage(unittest.TestCase):
@@ -135,8 +134,8 @@ class TestDiscordAlert(unittest.TestCase):
         }
         message = {"content": f"🚨 CPU spike detected: 10%"}
 
-        with patch('alerts.discord.requests.post') as mock_post:
-            with patch('alerts.discord.time.sleep'):
+        with patch('src.alerts.discord.requests.post') as mock_post:
+            with patch('src.alerts.discord.time.sleep'):
                 mock_post.return_value.status_code = 200
                 result = send_discord_alert(message, config)
 
@@ -154,8 +153,8 @@ class TestDiscordAlert(unittest.TestCase):
         }
         message = {"content": f"🚨 CPU spike detected: 10%"}
 
-        with patch('alerts.discord.requests.post') as mock_post:
-            with patch('alerts.discord.time.sleep'):
+        with patch('src.alerts.discord.requests.post') as mock_post:
+            with patch('src.alerts.discord.time.sleep'):
                 mock_post.return_value.status_code = 500
                 result = send_discord_alert(message, config)
 
@@ -174,8 +173,8 @@ class TestDiscordAlert(unittest.TestCase):
         message = {"content": f"🚨 CPU spike detected: 10%"}
 
 
-        with patch('alerts.discord.requests.post') as patch_post:
-            with patch('alerts.discord.time.sleep'):
+        with patch('src.alerts.discord.requests.post') as patch_post:
+            with patch('src.alerts.discord.time.sleep'):
                 result = send_discord_alert(message, config)
 
         self.assertFalse(result)

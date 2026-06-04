@@ -19,3 +19,4 @@ groups:
         annotations:
           summary: "CPU % above 80"
           description: "CPU % is above 80 for more than 2 minutes"
+        

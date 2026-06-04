@@ -2,9 +2,8 @@ services:
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-      - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -13,8 +12,6 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    volumes:
-      - grafana_data:/var/lib/grafana
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -22,11 +19,18 @@ services:
   alertmanager:
     image: prom/alertmanager:latest
     volumes:
-      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
-      - alertmanager_data:/alertmanager_data
-      - ./alertmanager/discord_webhook.txt:/etc/alertmanager/discord_webhook.txt
+      - ./infra/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./infra/alertmanager/discord_webhook.txt:/etc/alertmanager/discord_webhook.txt
     ports:
       - "9093:9093"
+    restart: unless-stopped
+
+  system_monitor:
+    image: system_monitor
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
     restart: unless-stopped
 
 volumes:
