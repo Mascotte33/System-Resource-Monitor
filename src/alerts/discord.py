@@ -1,5 +1,4 @@
 import time
-
 import requests
 from config.logger_config import logger
 

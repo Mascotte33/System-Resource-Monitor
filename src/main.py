@@ -16,7 +16,7 @@ with open("config/config.yaml") as file:
     config = yaml.safe_load(file)
 
 if config == None:
-    logger.critical('config.yml file is missing, exiting')
+    logger.critical('config.yaml file is missing, exiting')
     quit()
 
 config["alerts"]['discord']['webhook_url'] = os.environ.get("DISCORD_WEBHOOK_URL")
@@ -28,7 +28,6 @@ if __name__ == "__main__":
     while True:
         try:
             metrics = collect_metrics()
-            
             
             if metrics['top_ten_processes']:
                 offender_process = metrics['top_ten_processes'][0]['name']
